@@ -3,12 +3,11 @@
 
 #include <string>
 #include <memory>
-#include "DisplayState.h"
+#include "ImageState.h"
 
 class App {
-  std::unique_ptr<DisplayState> displayState;
-  std::unique_ptr<Renderer> renderer;
-  std::unique_ptr<Listener> listener;
+  std::unique_ptr<ImageState> imageState;
+  //TODO std::unique_ptr<Listener> listener;
 
   public:
     App(std::string fileName = "");

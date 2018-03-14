@@ -1,35 +1,29 @@
 #ifndef _IMAGE_STATE_H_
 #define _IMAGE_STATE_H_
 
-#include <memory>
-#include <string>
-#include <iterator>
-#include <iostream>
+#include <vector>
 #include <cstddef>
-
-#include <opencv2/opencv.hpp>
-
-using std::unique_ptr;
+#include <string>
+#include <cstdint>
 
 class FileCouldNotBeOpenedError{};
 
+struct Pixel {
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  uint8_t alpha;
+};
+
 class ImageState{
-  unique_ptr<unique_ptr<uchar[4]>> imagePixels;
+  size_t width;
+  size_t height;
+  std::string imageName;
+  std::vector<Pixel> imagePixels;
   public:
-    ImageState(std::string fileName) {
-      std::cout<< fileName << std::endl;
-      cv::Mat image = cv::imread(fileName, cv::IMREAD_COLOR);
-      if(!image.data){
-        throw FileCouldNotBeOpenedError{};
-      }
-      size_t i = 0;
-      while(i < 360000) {
-        std::cout<< static_cast<int>(image.data[i]) <<std::endl;
-          std::cout<< "size"<< i <<std::endl;
-        i++;
-      }
-      std::cout << static_cast<size_t>(sizeof(image.data)) << std::endl;
-    }
+    ImageState(std::string fileName);
+    Pixel &getPixel(size_t xCoord, size_t yCoord);
+    void printState();
 };
 
 #endif

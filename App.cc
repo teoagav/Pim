@@ -1,15 +1,15 @@
 #include "App.h"
 #include "ImageState.h"
-#include "Renderer.h"
+//TODO #include "Renderer.h"
 
-App::App(std::string fileName): imageState{ std::make_unique<ImageState>(ImageState{fileName}) },
-  listener{ std::make_unique<Listener>(Listener{}) }
+App::App(std::string fileName): imageState{ std::make_unique<ImageState>(ImageState{fileName}) }
+  //TODO listener{ std::make_unique<Listener>(Listener{}) }
   {}
 
 void App::run(){
-  Renderer renderer{this};
-
-  while(1) {
-    renderer.refresh();
-  }
+  //TODO Renderer renderer{this};
+  imageState->printState();
+  //while(1) {
+    //TODO renderer.refresh();
+  //}
 }
