@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     App pim{};
     pim.run();
   } else if(argc == 2){
-    App pim{argv[0]};
+    App pim{argv[1]};
     pim.run();
   } else {
     std::cout << "Invalid arguments. Use: pim (optional file name)" << std::endl;
