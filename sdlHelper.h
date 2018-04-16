@@ -5,7 +5,8 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
-bool initSDL();
+int initSDL();
+void updateSDL();
 void closeSDL();
 
 #endif
