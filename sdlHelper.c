@@ -1,14 +1,17 @@
 #include "sdlHelper.h"
+#include <SDL2/SDL.h>
+#include <stdio.h>
 
 const int SCREEN_WIDTH = 750;
-const int SCREEN_HEIGHT = 500;
+const int SCREEN_HEIGHT = 750;
 
 int loadMedia();
-SDL_Texture* loadTexture(char* path);
+SDL_Texture* loadTexture(const char* const path);
 
-SDL_Window* gWindow = NULL;
-SDL_Renderer* gRenderer = NULL;
-SDL_Texture* gTexture = NULL;
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+SDL_Texture* fileTexture = NULL;
+SDL_Texture* folderTexture = NULL;
 
 
 int initSDL() {
@@ -16,32 +19,32 @@ int initSDL() {
 		printf("SDL failed to start. Error: %s\n", SDL_GetError());
 		return 0;
 	}
-	else if(!SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" )) {
+	else if(!SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
 		printf("Linear texture filtering could not be enabled");
 		return 0;
 	}
-	else if ((gWindow = SDL_CreateWindow( "Sea Explorer", SDL_WINDOWPOS_UNDEFINED,
+	else if ((window = SDL_CreateWindow("Sea Explorer", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL) {
 		printf("Window failed to be created. Error: %s\n", SDL_GetError());
 		return 0;
 	}
-	else if ((gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
+	else if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
 		printf("Renderer failed be created! Error: %s\n", SDL_GetError());
 		return 0;
 	}
 	else {
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	}
 
 	return loadMedia();
 }
 
-SDL_Texture* loadTexture(char* path) {
+SDL_Texture* loadTexture(const char* const path) {
 	SDL_Texture* newTexture = NULL;
 
 	SDL_Surface* tempSurface = SDL_LoadBMP(path);
 	if(tempSurface != NULL) {
-    newTexture = SDL_CreateTextureFromSurface(gRenderer, tempSurface);
+    newTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
 
 		if(newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
@@ -56,27 +59,55 @@ SDL_Texture* loadTexture(char* path) {
 }
 
 int loadMedia() {
-	gTexture = loadTexture("file_icon.bmp");
-	return gTexture != NULL;
+	fileTexture = loadTexture("file_icon.bmp");
+	folderTexture = loadTexture("folder_icon.bmp");
+	return fileTexture != NULL && folderTexture != NULL;
 }
 
 void closeSDL() {
-	SDL_DestroyTexture(gTexture);
-	gTexture = NULL;
+	SDL_DestroyTexture(fileTexture);
+	fileTexture = NULL;
 
-	SDL_DestroyRenderer(gRenderer);
-	SDL_DestroyWindow(gWindow);
-	gWindow = NULL;
-	gRenderer = NULL;
+	SDL_DestroyTexture(folderTexture);
+	folderTexture = NULL;
+
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	window = NULL;
+	renderer = NULL;
 
 	SDL_Quit();
 }
 
 
 void updateSDL() {
-	SDL_RenderClear( gRenderer );
+	SDL_RenderClear(renderer);
 
-	SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+	//SDL_Rect renderQuad = { 50, 100, 25, 25 };
 
-	SDL_RenderPresent( gRenderer );
+	//SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad);
+
+	//SDL_RenderPresent(renderer);
+}
+
+void clearSDL() {
+	SDL_RenderClear(renderer);
+}
+
+void presentSDL() {
+	SDL_RenderPresent(renderer);
+}
+
+void drawFolder(int yPos) {
+	SDL_Rect renderQuad = { 50, yPos, 20, 20 };
+
+	SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad);
+}
+
+void drawFile(int yPos) {
+	SDL_Rect renderQuad  = { 50, yPos, 20, 20 };
+
+	if(SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad)){
+		printf("Render copy failed\n");
+	}
 }

@@ -2,11 +2,14 @@
 
 #define _SDL_HELPER_
 
-#include <SDL2/SDL.h>
-#include <stdio.h>
-
 int initSDL();
 void updateSDL();
+void clearSDL();
+void presentSDL();
+void updateSDL();
 void closeSDL();
+
+void drawFolder(int yPos);
+void drawFile(int yPos);
 
 #endif
