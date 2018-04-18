@@ -32,6 +32,7 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
     }
 
     const size_t nameLength = strlen(entry->d_name);
+
     if (nameLength == 1 && entry->d_name[0] == '.') {
       continue;
     }
@@ -47,18 +48,23 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
 
     //TODO sort items by type and alphabetically
     items[location].type = type;
-    items[location].name = entry->d_name;
+    items[location].name = malloc((nameLength+1) * sizeof(char));
+    strcpy(items[location].name, entry->d_name);
     ++location;
   }
 
   closedir(directory);
 
-  struct DIRECTORY newDirectory = {size, items};
+  struct DIRECTORY newDirectory = {location, items};
   return newDirectory;
 }
 
 
 void freeDirectory(struct DIRECTORY directory) {
+  for (int i = 0; i < directory.itemCount; i++) {
+    free(directory.items[i].name);
+    directory.items[i].name = NULL;
+  }
   free(directory.items);
   directory.items = NULL;
 }

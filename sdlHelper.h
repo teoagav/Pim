@@ -4,6 +4,9 @@
 
 int initSDL();
 void updateSDL();
+void clearSDL();
+void presentSDL();
+void updateSDL();
 void closeSDL();
 
 void drawFolder(int yPos);

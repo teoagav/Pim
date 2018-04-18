@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 const int SCREEN_WIDTH = 750;
-const int SCREEN_HEIGHT = 1000;
+const int SCREEN_HEIGHT = 750;
 
 int loadMedia();
 SDL_Texture* loadTexture(const char* const path);
@@ -90,18 +90,24 @@ void updateSDL() {
 	//SDL_RenderPresent(renderer);
 }
 
+void clearSDL() {
+	SDL_RenderClear(renderer);
+}
+
+void presentSDL() {
+	SDL_RenderPresent(renderer);
+}
+
 void drawFolder(int yPos) {
 	SDL_Rect renderQuad = { 50, yPos, 20, 20 };
 
 	SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad);
-
-	SDL_RenderPresent(renderer);
 }
 
 void drawFile(int yPos) {
-	SDL_Rect renderQuad = { 50, yPos, 20, 20 };
+	SDL_Rect renderQuad  = { 50, yPos, 20, 20 };
 
-	SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad);
-
-	SDL_RenderPresent(renderer);
+	if(SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad)){
+		printf("Render copy failed\n");
+	}
 }
