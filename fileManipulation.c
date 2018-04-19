@@ -3,6 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int compareDirectoyItems(const void* dirItem1, const void* dirItem2) {
+  return strcasecmp(((struct DIRECTORY_ITEM*)dirItem1)->name, ((struct DIRECTORY_ITEM*)dirItem2)->name);
+}
+
+int comp (const void * elem1, const void * elem2)
+{
+    int f = *((int*)elem1);
+    int s = *((int*)elem2);
+    if (f > s) return  1;
+    if (f < s) return -1;
+    return 0;
+}
+
+
 struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
   DIR* directory = opendir(directoryPath);
 
@@ -14,6 +28,7 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
 
   size_t size = 1;
   size_t location = 0;
+  size_t directoryLoc = 0;
 
   struct DIRECTORY_ITEM* items = malloc(sizeof(struct DIRECTORY_ITEM));
 
@@ -46,14 +61,40 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
       type = UP_ONE_LEVEL_TYPE;
     }
 
-    //TODO sort items by type and alphabetically
-    items[location].type = type;
-    items[location].name = malloc((nameLength+1) * sizeof(char));
-    strcpy(items[location].name, entry->d_name);
+    if (type == FILE_TYPE || location == directoryLoc) {
+      items[location].type = type;
+      items[location].name = malloc((nameLength+1) * sizeof(char));
+      strcpy(items[location].name, entry->d_name);
+    }
+    else if (type == UP_ONE_LEVEL_TYPE) {
+      items[location].type = items[0].type;
+      items[location].name = items[0].name;
+
+      items[0].type = type;
+      items[0].name = malloc((nameLength+1) * sizeof(char));
+      strcpy(items[0].name, entry->d_name);
+    }
+    else {
+      items[location].type = items[directoryLoc].type;
+      items[location].name = items[directoryLoc].name;
+
+      items[directoryLoc].type = type;
+      items[directoryLoc].name = malloc((nameLength+1) * sizeof(char));
+      strcpy(items[directoryLoc].name, entry->d_name);
+    }
+
+    if (type == UP_ONE_LEVEL_TYPE || type == FOLDER_TYPE) {
+      ++directoryLoc;
+    }
+
     ++location;
   }
 
   closedir(directory);
+
+  qsort(items, directoryLoc, sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
+  qsort(items + directoryLoc, location - directoryLoc,
+    sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
 
   struct DIRECTORY newDirectory = {location, items};
   return newDirectory;
