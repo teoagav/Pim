@@ -6,28 +6,15 @@
 
 int main(int argc, char** args) {
 	if(!initSDL()) {
+		printf("Initialization failed\n");
     return 1;
 	}
 
   char quit = 0;
   SDL_Event event;
 
-	//updateSDL();
-	//Hacky print to test out function
 	struct DIRECTORY currentDir = listDirectoryItems(".");
-	clearSDL();
-	printf("%zu\n", currentDir.itemCount);
-	for (int i = 0; i < currentDir.itemCount; i++) {
-		printf("%s ", currentDir.items[i].name);
-		if (currentDir.items[i].type == FILE_TYPE) {
-			printf("%d\n", i*30);
-			drawFile(i*30);
-		} else if (currentDir.items[i].type == FOLDER_TYPE || currentDir.items[i].type == UP_ONE_LEVEL_TYPE) {
-			printf("%d\n", i*30);
-			drawFolder(i*30);
-		}
-	}
-	presentSDL();
+	updateSDL(&currentDir);
 
   while(!quit) {
     while(SDL_PollEvent(&event) != 0) {
@@ -35,8 +22,6 @@ int main(int argc, char** args) {
         quit = 1;
       }
     }
-
-    //updateSDL();
   }
 
 	closeSDL();

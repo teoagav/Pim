@@ -2,8 +2,10 @@
 
 #define _SDL_HELPER_
 
+#include "fileManipulation.h"
+
 int initSDL();
-void updateSDL();
+void updateSDL(struct DIRECTORY* dir);
 void clearSDL();
 void presentSDL();
 void updateSDL();

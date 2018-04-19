@@ -1,3 +1,7 @@
+#ifndef _FILE_MANIPULATION_
+
+#define _FILE_MANIPULATION_
+
 #include <dirent.h>
 #include <stddef.h>
 
@@ -9,6 +13,7 @@ enum DIRECTORY_ITEM_TYPE {
 
 struct DIRECTORY_ITEM {
   char* name;
+  size_t nameLength;
   enum DIRECTORY_ITEM_TYPE type;
 };
 
@@ -19,3 +24,5 @@ struct DIRECTORY {
 
 struct DIRECTORY listDirectoryItems(const char* const directoryPath);
 void freeDirectory(struct DIRECTORY directory);
+
+#endif

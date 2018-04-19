@@ -1,5 +1,5 @@
 TARGET = SeaExplorer
-LIBS = -lSDL2
+LIBS = -lSDL2 -lSDL2_ttf
 CC = gcc
 CFLAGS = -g -Wall
 

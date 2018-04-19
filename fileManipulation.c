@@ -5,17 +5,8 @@
 
 int compareDirectoyItems(const void* dirItem1, const void* dirItem2) {
   return strcasecmp(((struct DIRECTORY_ITEM*)dirItem1)->name, ((struct DIRECTORY_ITEM*)dirItem2)->name);
+  //TODO have custom compare for cases like files beginning with .
 }
-
-int comp (const void * elem1, const void * elem2)
-{
-    int f = *((int*)elem1);
-    int s = *((int*)elem2);
-    if (f > s) return  1;
-    if (f < s) return -1;
-    return 0;
-}
-
 
 struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
   DIR* directory = opendir(directoryPath);
@@ -63,24 +54,29 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
 
     if (type == FILE_TYPE || location == directoryLoc) {
       items[location].type = type;
+      items[location].nameLength = nameLength;
       items[location].name = malloc((nameLength+1) * sizeof(char));
       strcpy(items[location].name, entry->d_name);
     }
     else if (type == UP_ONE_LEVEL_TYPE) {
       items[location].type = items[0].type;
       items[location].name = items[0].name;
+      items[location].nameLength = items[0].nameLength;
 
       items[0].type = type;
       items[0].name = malloc((nameLength+1) * sizeof(char));
       strcpy(items[0].name, entry->d_name);
+      items[0].nameLength = nameLength;
     }
     else {
       items[location].type = items[directoryLoc].type;
       items[location].name = items[directoryLoc].name;
+      items[location].nameLength = items[directoryLoc].nameLength;
 
       items[directoryLoc].type = type;
       items[directoryLoc].name = malloc((nameLength+1) * sizeof(char));
       strcpy(items[directoryLoc].name, entry->d_name);
+      items[directoryLoc].nameLength = nameLength;
     }
 
     if (type == UP_ONE_LEVEL_TYPE || type == FOLDER_TYPE) {
