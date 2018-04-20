@@ -1,6 +1,6 @@
-#ifndef _FILE_MANIPULATION_
+#ifndef _DIRECTORY_ITEM_
 
-#define _FILE_MANIPULATION_
+#define _DIRECTORY_ITEM_
 
 #include <dirent.h>
 #include <stddef.h>
@@ -19,6 +19,7 @@ struct DIRECTORY_ITEM {
 
 struct DIRECTORY {
   size_t itemCount;
+  size_t topFile;
   struct DIRECTORY_ITEM* items;
 };
 

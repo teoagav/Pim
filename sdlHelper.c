@@ -3,7 +3,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "GUIConstants.h"
-#include "fileManipulation.h"
+#include "directoryItem.h"
 
 const int SCREEN_WIDTH = 750;
 const int SCREEN_HEIGHT = 750;
@@ -108,7 +108,7 @@ void drawDirectoryItemName(char* text, const size_t nameLength, const int yPos) 
 	}
 	else {
 		//printf("%zu\n", nameLength);
-		const int offset = FILE_LIST_LEFT_OFFSET + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP;
+		const int offset = FILE_LIST_LEFT_PADDING + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP;
 		SDL_Rect renderQuad  = { offset, yPos, nameLength*CHAR_WIDTH, FILE_TEXT_HEIGHT };
 
 		if (SDL_RenderCopy(renderer, textTexture, NULL, &renderQuad)) {
@@ -123,7 +123,7 @@ void drawDirectoryItemName(char* text, const size_t nameLength, const int yPos) 
 }
 
 void drawFolder(const int yPos) {
-	SDL_Rect renderQuad = { FILE_LIST_LEFT_OFFSET, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
+	SDL_Rect renderQuad = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad)) {
 		printf("Render copy failed\n");
@@ -131,7 +131,7 @@ void drawFolder(const int yPos) {
 }
 
 void drawFile(const int yPos) {
-	SDL_Rect renderQuad  = { FILE_LIST_LEFT_OFFSET, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
+	SDL_Rect renderQuad  = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad)) {
 		printf("Render copy failed\n");
@@ -143,7 +143,7 @@ void drawDirectoryItem(struct DIRECTORY* dir) {
 
 	for (int i = 0; i < dir->itemCount; i++) {
 		printf("%s\n", dir->items[i].name);
-		const int yPos = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_OFFSET;
+		const int yPos = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_PADDING;
 
 		if (dir->items[i].type == FILE_TYPE) {
 			drawFile(yPos);
@@ -155,10 +155,10 @@ void drawDirectoryItem(struct DIRECTORY* dir) {
 	}
 }
 
-void updateSDL(struct DIRECTORY* dir) {//Consider having a "state" struct
+void updateSDL(struct State* state) {
 	SDL_RenderClear(renderer);
 
-	drawDirectoryItem(dir);
+	drawDirectoryItem(&state->directoryContents);
 
 	SDL_RenderPresent(renderer);
 }

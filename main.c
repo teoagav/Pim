@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 
 #include "sdlHelper.h"
-#include "fileManipulation.h"
+#include "directoryItem.h"
 
 int main(int argc, char** args) {
 	if(!initSDL()) {
@@ -13,8 +13,8 @@ int main(int argc, char** args) {
   char quit = 0;
   SDL_Event event;
 
-	struct DIRECTORY currentDir = listDirectoryItems(".");
-	updateSDL(&currentDir);
+	struct State currentState = initState();
+	updateSDL(&currentState);
 
   while(!quit) {
     while(SDL_PollEvent(&event) != 0) {
@@ -25,7 +25,7 @@ int main(int argc, char** args) {
   }
 
 	closeSDL();
-	freeDirectory(currentDir);
+	freeState(&currentState);
 
 	return 0;
 }

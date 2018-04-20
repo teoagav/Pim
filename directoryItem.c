@@ -1,4 +1,4 @@
-#include "fileManipulation.h"
+#include "directoryItem.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
 
   if (directory == NULL) {
     printf("Could not open directory %s", directoryPath);
-    struct DIRECTORY newDirectory = {0, NULL};
+    struct DIRECTORY newDirectory = {0,0, NULL};
     return newDirectory;
   }
 
@@ -92,7 +92,7 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
   qsort(items + directoryLoc, location - directoryLoc,
     sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
 
-  struct DIRECTORY newDirectory = {location, items};
+  struct DIRECTORY newDirectory = {location, 0, items};
   return newDirectory;
 }
 
