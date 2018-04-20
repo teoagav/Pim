@@ -5,9 +5,6 @@
 #include "GUIConstants.h"
 #include "directoryItem.h"
 
-const int SCREEN_WIDTH = 750;
-const int SCREEN_HEIGHT = 750;
-
 int loadMedia();
 SDL_Texture* loadTexture(const char* const path);
 
@@ -41,7 +38,7 @@ int initSDL() {
 		return 0;
 	}
 	else {
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	}
 
 	return loadMedia();
@@ -95,7 +92,7 @@ void closeSDL() {
 	SDL_Quit();
 }
 
-void drawDirectoryItemName(char* text, const size_t nameLength, const int yPos) {
+void drawText(const char* text, const size_t nameLength, const int xPos,const int yPos) {
 	SDL_Color textColor = { 0, 0, 0 };
 	SDL_Surface* textSurface = NULL;
 	SDL_Texture* textTexture = NULL;
@@ -104,15 +101,14 @@ void drawDirectoryItemName(char* text, const size_t nameLength, const int yPos) 
 		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	}
 	else if (!(textTexture = SDL_CreateTextureFromSurface(renderer, textSurface))) {
-		printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		printf("Unable to create texture from rendered text! Error: %s\n", SDL_GetError());
 	}
 	else {
-		//printf("%zu\n", nameLength);
 		const int offset = FILE_LIST_LEFT_PADDING + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP;
 		SDL_Rect renderQuad  = { offset, yPos, nameLength*CHAR_WIDTH, FILE_TEXT_HEIGHT };
 
 		if (SDL_RenderCopy(renderer, textTexture, NULL, &renderQuad)) {
-			printf("Render copy failed\n");
+			printf("Render copy for writing text failed\n");
 		}
 
 		SDL_FreeSurface(textSurface);
@@ -122,11 +118,18 @@ void drawDirectoryItemName(char* text, const size_t nameLength, const int yPos) 
 	}
 }
 
+void drawRectOutLine(const int xPos, const int yPos, const int width, const int height) {
+	const SDL_Point points[5] = {{xPos, yPos}, {xPos + width, yPos}, {xPos + width, yPos + height}, {xPos, yPos + height}, {xPos, yPos}};
+	if (SDL_RenderDrawLines(renderer, points, 5)) {
+		printf("Render draw sqaure outline failed. Error: %s\n", SDL_GetError());
+	}
+}
+
 void drawFolder(const int yPos) {
 	SDL_Rect renderQuad = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad)) {
-		printf("Render copy failed\n");
+		printf("Render copy for folder icon failed\n");
 	}
 }
 
@@ -134,31 +137,45 @@ void drawFile(const int yPos) {
 	SDL_Rect renderQuad  = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad)) {
-		printf("Render copy failed\n");
+		printf("Render copy for file icon failed\n");
 	}
 }
 
-void drawDirectoryItem(struct DIRECTORY* dir) {
+void drawDirectoryItems(const struct DIRECTORY* dir) {
 	printf("%zu\n", dir->itemCount);
+	const size_t topItem = dir->topItem;
+	const int fileListHeight = SCREEN_HEIGHT - FILE_LIST_TOP_PADDING - FILE_LIST_BOTTOM_PADDING;
+	const int fileListWidth = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
 
-	for (int i = 0; i < dir->itemCount; i++) {
-		printf("%s\n", dir->items[i].name);
-		const int yPos = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_PADDING;
+	for (size_t i = 0; i + topItem < dir->itemCount && ((i + 1) * (FILE_ICON_SIZE + FILE_SPACING)) <= fileListHeight; i++) {
+		printf("%s\n", dir->items[i + topItem].name);
+		const int yPosImage = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_PADDING;
 
-		if (dir->items[i].type == FILE_TYPE) {
-			drawFile(yPos);
+		if (dir->items[i + topItem].type == FILE_TYPE) {
+			drawFile(yPosImage);
 		}
-		else if (dir->items[i].type == FOLDER_TYPE || dir->items[i].type == UP_ONE_LEVEL_TYPE) {
-			drawFolder(yPos);
+		else if (dir->items[i + topItem].type == FOLDER_TYPE || dir->items[i + topItem].type == UP_ONE_LEVEL_TYPE) {
+			drawFolder(yPosImage);
 		}
-		drawDirectoryItemName(dir->items[i].name, dir->items[i].nameLength, yPos + FILE_TEXT_TOP_OFFSET);
+		const int xPosText = FILE_LIST_LEFT_PADDING + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP;
+		drawText(dir->items[i + topItem].name, dir->items[i + topItem].nameLength, xPosText, yPosImage + TEXT_TOP_OFFSET);
+		drawRectOutLine(FILE_LIST_LEFT_PADDING, yPosImage, fileListWidth, FILE_ICON_SIZE);
 	}
+}
+
+void drawCurrentDirectoryBar(const char* currentDirectory, const size_t length) {
+	const int width = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
+	drawRectOutLine(FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING, width, CURRENT_DIRECTORY_BAR_HEIGHT);
+	drawText(currentDirectory, length, FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING + TEXT_TOP_OFFSET);
 }
 
 void updateSDL(struct State* state) {
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
 
-	drawDirectoryItem(&state->directoryContents);
+	drawDirectoryItems(&state->directoryContents);
+	drawCurrentDirectoryBar(state->currentDirectory, state->cdStringLength);
 
 	SDL_RenderPresent(renderer);
 }

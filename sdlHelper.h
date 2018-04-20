@@ -11,7 +11,4 @@ void presentSDL();
 void updateSDL();
 void closeSDL();
 
-void drawFolder(int yPos);
-void drawFile(int yPos);
-
 #endif

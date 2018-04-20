@@ -19,7 +19,7 @@ struct DIRECTORY_ITEM {
 
 struct DIRECTORY {
   size_t itemCount;
-  size_t topFile;
+  size_t topItem;
   struct DIRECTORY_ITEM* items;
 };
 
