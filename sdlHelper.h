@@ -2,8 +2,10 @@
 
 #define _SDL_HELPER_
 
+#include "state.h"
+
 int initSDL();
-void updateSDL();
+void updateSDL(struct State* dir);
 void clearSDL();
 void presentSDL();
 void updateSDL();
