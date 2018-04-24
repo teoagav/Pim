@@ -21,6 +21,9 @@ int main(int argc, char** args) {
       if(event.type == SDL_QUIT) {
         quit = 1;
       }
+			/*else if (event.type == SDL_MOUSEBUTTONUP && event.clicks == 2) {
+				directoryItemDoubleClicked(&(currentState.directoryContents), event.x, event.y);
+			}*/
     }
   }
 

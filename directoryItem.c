@@ -3,9 +3,88 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int charCmp(const char char1, const  char char2) {
+	const char isAlpha1 = ('A' <= char1 && char1 <= 'Z') || ('a' <= char1 && char1 <= 'z');
+	const char isAlpha2 = ('A' <= char2 && char2 <= 'Z') || ('a' <= char2 && char2 <= 'z');
+
+	if(!isAlpha1 && !isAlpha2) {
+		if(char1 < char2) {
+			return -1;
+		}
+		else if(char2 < char1) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else if(!isAlpha1) {
+		return -1;
+	}
+	else if(!isAlpha2) {
+		return 1;
+	}
+	else {
+    const char isUpper1 = 'A' <= char1 && char1 <= 'Z';
+    const char isUpper2 = 'A' <= char2 && char2 <= 'Z';
+
+    if ((isUpper1 && isUpper2) || (!isUpper1 && !isUpper2)) {
+      if (char1 < char2) {
+        return -1;
+      }
+      else if (char2 < char1) {
+        return 1;
+      }
+      else {
+        return 0;
+      }
+    }
+    else if (isUpper1) {
+      const char lowerChar1 = char1 + 32;
+      if (lowerChar1 <= char2) {
+        return -1;
+      }
+      else {
+        return 1;
+      }
+    }
+    else {
+      const char lowerChar2 = char2 + 32;
+      if (char1 < lowerChar2) {
+        return -1;
+      }
+      else {
+        return 1;
+      }
+    }
+	}
+}
+
 int compareDirectoyItems(const void* dirItem1, const void* dirItem2) {
-  return strcasecmp(((struct DIRECTORY_ITEM*)dirItem1)->name, ((struct DIRECTORY_ITEM*)dirItem2)->name);
-  //TODO have custom compare for cases like files beginning with .
+  size_t index1 = 0;
+  size_t index2 = 0;
+  const char* const myStr1 = ((struct DIRECTORY_ITEM *) dirItem1)->name;
+  const char* const myStr2 = ((struct DIRECTORY_ITEM *) dirItem2)->name;
+
+  while(myStr1[index1] != '\0' && myStr2[index2] != '\0') {
+    const char char1 = myStr1[index1];
+    const char char2 = myStr2[index2];
+    if(char1 == '\0') {
+      return -1;
+    }
+    else if(char2 == '\0') {
+      return 1;
+    }
+
+    const int charCmpResult = charCmp(myStr1[index1], myStr2[index2]);
+    if(charCmpResult != 0) {
+      return charCmpResult;
+    }
+
+    index1++;
+    index2++;
+  }
+  return 0;
 }
 
 struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
