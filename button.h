@@ -1,14 +1,14 @@
-#ifndef _DIRECTORY_ITEM_
+#ifndef _BUTTON_
 
-#define _DIRECTORY_ITEM_
+#define _BUTTON_
 
 struct BUTTON {
-  int xPos,
-  int yPos,
-  int height,
-  int width,
+  int xPos;
+  int yPos;
+  int width;
+  int height;
 };
 
-char isClicked(struct BUTTON* button, const int clickXPos, const in clickYPos);
+char isClicked(struct BUTTON* button, const int clickXPos, const int clickYPos);
 
 #endif

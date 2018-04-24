@@ -11,4 +11,9 @@ void presentSDL();
 void updateSDL();
 void closeSDL();
 
+void drawRectOutLine(const int xPos, const int yPos, const int width, const int height);
+void drawFolder(const int xPos, const int yPos);
+void drawFile(const int xPos, const int yPos);
+void drawText(const char* text, const size_t nameLength, const int xPos,const int yPos);
+
 #endif

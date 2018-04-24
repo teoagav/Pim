@@ -4,6 +4,7 @@
 
 #include <dirent.h>
 #include <stddef.h>
+#include "button.h"
 
 enum DIRECTORY_ITEM_TYPE {
   UP_ONE_LEVEL_TYPE,
@@ -14,6 +15,7 @@ enum DIRECTORY_ITEM_TYPE {
 struct DIRECTORY_ITEM {
   char* name;
   size_t nameLength;
+  struct BUTTON button;
   enum DIRECTORY_ITEM_TYPE type;
 };
 
@@ -24,6 +26,7 @@ struct DIRECTORY {
 };
 
 struct DIRECTORY listDirectoryItems(const char* const directoryPath);
-void freeDirectory(struct DIRECTORY directory);
+void drawDirectoryItems(const struct DIRECTORY* dir);
+void freeDirectory(struct DIRECTORY* directory);
 
 #endif

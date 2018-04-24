@@ -15,7 +15,8 @@ struct State initState() {
   char* cwd = getcwd(NULL, 0);
   currentDirectoryStringSize = strlen(cwd);
   currentDirectoryBufferSize = currentDirectoryStringSize;
-  struct State newState = {cwd, currentDirectoryStringSize, listDirectoryItems(".")};
+  struct State newState = {cwd, currentDirectoryStringSize, malloc(sizeof(struct DIRECTORY))};
+  *(newState.directoryContents) = listDirectoryItems(".");
   stateInitted = 1;
 
   return newState;
@@ -24,5 +25,6 @@ struct State initState() {
 void freeState(struct State* state) {
   free(state->currentDirectory);
   freeDirectory(state->directoryContents);
+  free(state->directoryContents);
   stateInitted = 0;
 }

@@ -1,4 +1,6 @@
 #include "directoryItem.h"
+#include "GUIConstants.h"
+#include "sdlHelper.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -168,19 +170,53 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
   closedir(directory);
 
   qsort(items, directoryLoc, sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
-  qsort(items + directoryLoc, location - directoryLoc,
-    sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
+  qsort(items + directoryLoc, location - directoryLoc, sizeof(struct DIRECTORY_ITEM), compareDirectoyItems);
+
+	const int fileListWidth = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
+	for (size_t i = 0; i < location; i++) {
+		const int yPos = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_PADDING;
+		items[i].button.xPos = FILE_LIST_LEFT_PADDING;
+		items[i].button.yPos = yPos;
+		items[i].button.width = fileListWidth;
+		items[i].button.height = FILE_ICON_SIZE;
+	}
 
   struct DIRECTORY newDirectory = {location, 0, items};
   return newDirectory;
 }
 
-
-void freeDirectory(struct DIRECTORY directory) {
-  for (int i = 0; i < directory.itemCount; i++) {
-    free(directory.items[i].name);
-    directory.items[i].name = NULL;
+void freeDirectory(struct DIRECTORY* directory) {
+  for (int i = 0; i < directory->itemCount; i++) {
+    free(directory->items[i].name);
+    directory->items[i].name = NULL;
   }
-  free(directory.items);
-  directory.items = NULL;
+  free(directory->items);
+  directory->items = NULL;
+}
+
+void drawDirectoryItems(const struct DIRECTORY* dir) {
+	printf("%zu\n", dir->itemCount);
+	const size_t topItem = dir->topItem;
+
+	const int fileListHeight = SCREEN_HEIGHT - FILE_LIST_TOP_PADDING - FILE_LIST_BOTTOM_PADDING;
+	for (size_t i = topItem; i < dir->itemCount && ((i + 1) * (FILE_ICON_SIZE + FILE_SPACING)) <= fileListHeight; i++) {
+		const char* name = dir->items[i].name;
+		const size_t nameLength = dir->items[i].nameLength;
+		const int xPos = dir->items[i].button.xPos;
+		const int yPos = dir->items[i].button.yPos;
+		const int width = dir->items[i].button.width;
+		const int height = dir->items[i].button.height;
+
+		printf("%s\n", name);
+
+		if (dir->items[i].type == FILE_TYPE) {
+			drawFile(xPos, yPos);
+		}
+		else if (dir->items[i].type == FOLDER_TYPE || dir->items[i].type == UP_ONE_LEVEL_TYPE) {
+			drawFolder(xPos, yPos);
+		}
+
+		drawText(name, nameLength, xPos + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP, yPos + TEXT_TOP_OFFSET);
+		drawRectOutLine(xPos, yPos, width, height);
+	}
 }

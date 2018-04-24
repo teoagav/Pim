@@ -3,7 +3,6 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "GUIConstants.h"
-#include "directoryItem.h"
 
 int loadMedia();
 SDL_Texture* loadTexture(const char* const path);
@@ -125,44 +124,23 @@ void drawRectOutLine(const int xPos, const int yPos, const int width, const int 
 	}
 }
 
-void drawFolder(const int yPos) {
-	SDL_Rect renderQuad = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
+void drawFolder(const int xPos, const int yPos) {
+	SDL_Rect renderQuad = { xPos, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, folderTexture, NULL, &renderQuad)) {
 		printf("Render copy for folder icon failed\n");
 	}
 }
 
-void drawFile(const int yPos) {
-	SDL_Rect renderQuad  = { FILE_LIST_LEFT_PADDING, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
+void drawFile(const int xPos, const int yPos) {
+	SDL_Rect renderQuad  = { xPos, yPos, FILE_ICON_SIZE, FILE_ICON_SIZE };
 
 	if (SDL_RenderCopy(renderer, fileTexture, NULL, &renderQuad)) {
 		printf("Render copy for file icon failed\n");
 	}
 }
 
-void drawDirectoryItems(const struct DIRECTORY* dir) {
-	printf("%zu\n", dir->itemCount);
-	const size_t topItem = dir->topItem;
-	const int fileListHeight = SCREEN_HEIGHT - FILE_LIST_TOP_PADDING - FILE_LIST_BOTTOM_PADDING;
-	const int fileListWidth = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
-
-	for (size_t i = 0; i + topItem < dir->itemCount && ((i + 1) * (FILE_ICON_SIZE + FILE_SPACING)) <= fileListHeight; i++) {
-		printf("%s\n", dir->items[i + topItem].name);
-		const int yPosImage = (i * (FILE_SPACING + FILE_ICON_SIZE)) + FILE_LIST_TOP_PADDING;
-
-		if (dir->items[i + topItem].type == FILE_TYPE) {
-			drawFile(yPosImage);
-		}
-		else if (dir->items[i + topItem].type == FOLDER_TYPE || dir->items[i + topItem].type == UP_ONE_LEVEL_TYPE) {
-			drawFolder(yPosImage);
-		}
-		const int xPosText = FILE_LIST_LEFT_PADDING + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP;
-		drawText(dir->items[i + topItem].name, dir->items[i + topItem].nameLength, xPosText, yPosImage + TEXT_TOP_OFFSET);
-		drawRectOutLine(FILE_LIST_LEFT_PADDING, yPosImage, fileListWidth, FILE_ICON_SIZE);
-	}
-}
-
+//TODO add struct for current directory bar and add it to state
 void drawCurrentDirectoryBar(const char* currentDirectory, const size_t length) {
 	const int width = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
 	drawRectOutLine(FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING, width, CURRENT_DIRECTORY_BAR_HEIGHT);
@@ -174,7 +152,7 @@ void updateSDL(struct State* state) {
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
 
-	drawDirectoryItems(&state->directoryContents);
+	drawDirectoryItems(state->directoryContents);
 	drawCurrentDirectoryBar(state->currentDirectory, state->cdStringLength);
 
 	SDL_RenderPresent(renderer);

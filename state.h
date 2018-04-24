@@ -8,7 +8,7 @@
 struct State {
   char* currentDirectory;
   size_t cdStringLength;
-  struct DIRECTORY directoryContents;
+  struct DIRECTORY* directoryContents;
 };
 
 struct State initState();

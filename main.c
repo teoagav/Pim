@@ -3,6 +3,7 @@
 
 #include "sdlHelper.h"
 #include "directoryItem.h"
+#include "state.h"
 
 int main(int argc, char** args) {
 	if(!initSDL()) {
