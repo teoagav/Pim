@@ -5,7 +5,7 @@
 #include "state.h"
 
 int initSDL();
-void updateSDL(struct State* dir);
+void updateSDL(struct STATE* dir);
 void clearSDL();
 void presentSDL();
 void updateSDL();

@@ -1,9 +1,10 @@
-#include "directoryItem.h"
-#include "GUIConstants.h"
-#include "sdlHelper.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "directoryItem.h"
+#include "GUIConstants.h"
+#include "sdlHelper.h"
+#include "state.h"
 
 int charCmp(const char char1, const  char char2) {
 	const char isAlpha1 = ('A' <= char1 && char1 <= 'Z') || ('a' <= char1 && char1 <= 'z');
@@ -89,13 +90,12 @@ int compareDirectoyItems(const void* dirItem1, const void* dirItem2) {
   return 0;
 }
 
-struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
+struct DIRECTORY* listDirectoryItems(const char* const directoryPath) {
   DIR* directory = opendir(directoryPath);
 
   if (directory == NULL) {
     printf("Could not open directory %s", directoryPath);
-    struct DIRECTORY newDirectory = {0,0, NULL};
-    return newDirectory;
+    return NULL;
   }
 
   size_t size = 1;
@@ -181,17 +181,20 @@ struct DIRECTORY listDirectoryItems(const char* const directoryPath) {
 		items[i].button.height = FILE_ICON_SIZE;
 	}
 
-  struct DIRECTORY newDirectory = {location, 0, items};
+  struct DIRECTORY* newDirectory = malloc(sizeof(struct DIRECTORY));
+	newDirectory->itemCount = location;
+	newDirectory->topItem = 0;
+	newDirectory->items = items;
   return newDirectory;
 }
 
 void freeDirectory(struct DIRECTORY* directory) {
   for (int i = 0; i < directory->itemCount; i++) {
     free(directory->items[i].name);
-    directory->items[i].name = NULL;
   }
   free(directory->items);
-  directory->items = NULL;
+	free(directory);
+	directory = NULL;
 }
 
 void drawDirectoryItems(const struct DIRECTORY* dir) {
@@ -219,4 +222,18 @@ void drawDirectoryItems(const struct DIRECTORY* dir) {
 		drawText(name, nameLength, xPos + FILE_ICON_SIZE + FILE_TEXT_ICON_GAP, yPos + TEXT_TOP_OFFSET);
 		drawRectOutLine(xPos, yPos, width, height);
 	}
+}
+
+void directoryItemDoubleClicked(const struct STATE* state, const int xPos, const int yPos) {
+	 for (size_t i = 0; i < state->directoryContents->itemCount; i++) {
+		 if (isClicked(&(state->directoryContents->items[i].button), xPos, xPos)) {
+			 if (state->directoryContents->items[i].type == UP_ONE_LEVEL_TYPE) {
+
+			 }
+			 else if (state->directoryContents->items[i].type == FOLDER_TYPE) {
+
+			 }
+			 break;
+		 }
+	 }
 }

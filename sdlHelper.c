@@ -147,7 +147,7 @@ void drawCurrentDirectoryBar(const char* currentDirectory, const size_t length) 
 	drawText(currentDirectory, length, FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING + TEXT_TOP_OFFSET);
 }
 
-void updateSDL(struct State* state) {
+void updateSDL(struct STATE* state) {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);

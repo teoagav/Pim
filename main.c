@@ -14,22 +14,22 @@ int main(int argc, char** args) {
   char quit = 0;
   SDL_Event event;
 
-	struct State currentState = initState();
-	updateSDL(&currentState);
+	struct STATE* currentState = initState();
+	updateSDL(currentState);
 
   while(!quit) {
     while(SDL_PollEvent(&event) != 0) {
       if(event.type == SDL_QUIT) {
         quit = 1;
       }
-			/*else if (event.type == SDL_MOUSEBUTTONUP && event.clicks == 2) {
-				directoryItemDoubleClicked(&(currentState.directoryContents), event.x, event.y);
-			}*/
+			else if (event.button.type == SDL_MOUSEBUTTONUP && event.button.clicks == 2) {
+				directoryItemDoubleClicked(currentState, event.button.x, event.button.y);
+			}
     }
   }
 
 	closeSDL();
-	freeState(&currentState);
+	freeState(currentState);
 
 	return 0;
 }

@@ -8,23 +8,27 @@ size_t currentDirectoryStringSize = 0;
 size_t currentDirectoryBufferSize = 0;
 char stateInitted = 0;
 
-struct State initState() {
-  if (!stateInitted){
+struct STATE* initState() {
+  if (stateInitted){
     printf("Warning: State has already been initialized\n");
   }
   char* cwd = getcwd(NULL, 0);
   currentDirectoryStringSize = strlen(cwd);
   currentDirectoryBufferSize = currentDirectoryStringSize;
-  struct State newState = {cwd, currentDirectoryStringSize, malloc(sizeof(struct DIRECTORY))};
-  *(newState.directoryContents) = listDirectoryItems(".");
+  struct STATE* newState = malloc(sizeof(struct STATE));
+  newState->currentDirectory = cwd;
+  newState->cdStringLength = currentDirectoryStringSize;
+  newState->directoryContents =  listDirectoryItems(".");
   stateInitted = 1;
 
   return newState;
 }
 
-void freeState(struct State* state) {
+void freeState(struct STATE* state) {
+  //freeDirectoryBar(state->currentDirectory);
   free(state->currentDirectory);
   freeDirectory(state->directoryContents);
-  free(state->directoryContents);
+  free(state);
+  state = NULL;
   stateInitted = 0;
 }
