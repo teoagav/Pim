@@ -2,6 +2,8 @@
 
 #define _BUTTON_
 
+struct STATE;
+
 struct BUTTON {
   int xPos;
   int yPos;
@@ -10,5 +12,6 @@ struct BUTTON {
 };
 
 char isClicked(struct BUTTON* button, const int clickXPos, const int clickYPos);
+void handleDoubleClick(const struct STATE* state, const int xPos, const int yPos);
 
 #endif

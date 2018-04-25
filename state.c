@@ -1,11 +1,8 @@
 #include "state.h"
-#include <unistd.h>
-#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-size_t currentDirectoryStringSize = 0;
-size_t currentDirectoryBufferSize = 0;
+
 char stateInitted = 0;
 
 struct STATE* initState() {

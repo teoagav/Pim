@@ -4,6 +4,7 @@
 #include "sdlHelper.h"
 #include "directoryItem.h"
 #include "state.h"
+#include "button.h"
 
 int main(int argc, char** args) {
 	if(!initSDL()) {
@@ -23,7 +24,7 @@ int main(int argc, char** args) {
         quit = 1;
       }
 			else if (event.button.type == SDL_MOUSEBUTTONUP && event.button.clicks == 2) {
-				directoryItemDoubleClicked(currentState, event.button.x, event.button.y);
+				handleDoubleClick(currentState, event.button.x, event.button.y);
 			}
     }
   }

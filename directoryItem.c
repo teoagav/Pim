@@ -223,17 +223,3 @@ void drawDirectoryItems(const struct DIRECTORY* dir) {
 		drawRectOutLine(xPos, yPos, width, height);
 	}
 }
-
-void directoryItemDoubleClicked(const struct STATE* state, const int xPos, const int yPos) {
-	 for (size_t i = 0; i < state->directoryContents->itemCount; i++) {
-		 if (isClicked(&(state->directoryContents->items[i].button), xPos, xPos)) {
-			 if (state->directoryContents->items[i].type == UP_ONE_LEVEL_TYPE) {
-
-			 }
-			 else if (state->directoryContents->items[i].type == FOLDER_TYPE) {
-
-			 }
-			 break;
-		 }
-	 }
-}

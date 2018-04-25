@@ -6,8 +6,6 @@
 #include <stddef.h>
 #include "button.h"
 
-struct STATE;
-
 enum DIRECTORY_ITEM_TYPE {
   UP_ONE_LEVEL_TYPE,
   FILE_TYPE,
@@ -29,7 +27,6 @@ struct DIRECTORY {
 
 struct DIRECTORY* listDirectoryItems(const char* const directoryPath);
 void drawDirectoryItems(const struct DIRECTORY* dir);
-void directoryItemDoubleClicked(const struct STATE* state, const int xPos, const int yPos);
 void freeDirectory(struct DIRECTORY* directory);
 
 #endif

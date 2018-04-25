@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 #include "directoryItem.h"
+#include "directoryBar.h"
 
 struct STATE {
   //struct DIRECTORY_BAR* currentDirectory
