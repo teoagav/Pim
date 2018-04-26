@@ -1,5 +1,6 @@
 # SeaExplorer
 A simple file explorer made in C with SDL. Currently under construction.
+
 Features:
 - navigating through folders
 - bar containing current directory
