@@ -4,13 +4,14 @@
 
 #include <stddef.h>
 #include "directoryItem.h"
+#include "directoryBar.h"
 
-struct State {
-  char* currentDirectory;
-  struct DIRECTORY directoryContents;
+struct STATE {
+  struct DIRECTORY_BAR* currentDirectory;
+  struct DIRECTORY* directoryContents;
 };
 
-struct State initState();
-void freeState(struct State* state);
+struct STATE* initState();
+void freeState(struct STATE* state);
 
 #endif

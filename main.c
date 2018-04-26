@@ -3,6 +3,8 @@
 
 #include "sdlHelper.h"
 #include "directoryItem.h"
+#include "state.h"
+#include "button.h"
 
 int main(int argc, char** args) {
 	if(!initSDL()) {
@@ -13,19 +15,23 @@ int main(int argc, char** args) {
   char quit = 0;
   SDL_Event event;
 
-	struct State currentState = initState();
-	updateSDL(&currentState);
+	struct STATE* currentState = initState();
+	updateSDL(currentState);
 
   while(!quit) {
     while(SDL_PollEvent(&event) != 0) {
       if(event.type == SDL_QUIT) {
         quit = 1;
       }
+			else if (event.button.type == SDL_MOUSEBUTTONUP && event.button.clicks == 2) {
+				handleDoubleClick(currentState, event.button.x, event.button.y);
+				updateSDL(currentState);
+			}
     }
   }
 
 	closeSDL();
-	freeState(&currentState);
+	freeState(currentState);
 
 	return 0;
 }
