@@ -138,21 +138,33 @@ struct DIRECTORY* listDirectoryItems(const char* const directoryPath) {
       type = UP_ONE_LEVEL_TYPE;
     }
 
-    if (type == FILE_TYPE || location == directoryLoc) {
+
+		if (type == UP_ONE_LEVEL_TYPE && location != 0) {
+			if (directoryLoc != 0) {
+				items[location].type = items[directoryLoc].type;
+				items[location].name = items[directoryLoc].name;
+				items[location].nameLength = items[directoryLoc].nameLength;
+
+				items[directoryLoc].type = items[0].type;
+				items[directoryLoc].name = items[0].name;
+				items[directoryLoc].nameLength = items[0].nameLength;
+			}
+			else {
+				items[location].type = items[0].type;
+				items[location].name = items[0].name;
+				items[location].nameLength = items[0].nameLength;
+			}
+
+			items[0].type = type;
+			items[0].name = malloc((nameLength+1) * sizeof(char));
+			strcpy(items[0].name, entry->d_name);
+			items[0].nameLength = nameLength;
+		}
+    else if (type == FILE_TYPE || location == directoryLoc) {
       items[location].type = type;
       items[location].nameLength = nameLength;
       items[location].name = malloc((nameLength+1) * sizeof(char));
       strcpy(items[location].name, entry->d_name);
-    }
-    else if (type == UP_ONE_LEVEL_TYPE) {
-      items[location].type = items[0].type;
-      items[location].name = items[0].name;
-      items[location].nameLength = items[0].nameLength;
-
-      items[0].type = type;
-      items[0].name = malloc((nameLength+1) * sizeof(char));
-      strcpy(items[0].name, entry->d_name);
-      items[0].nameLength = nameLength;
     }
     else {
       items[location].type = items[directoryLoc].type;
