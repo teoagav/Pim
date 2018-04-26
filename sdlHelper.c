@@ -3,6 +3,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "GUIConstants.h"
+#include "directoryItem.h"
+#include "directoryBar.h"
 
 int loadMedia();
 SDL_Texture* loadTexture(const char* const path);
@@ -96,6 +98,10 @@ void drawText(const char* text, const size_t nameLength, const int xPos,const in
 	SDL_Surface* textSurface = NULL;
 	SDL_Texture* textTexture = NULL;
 
+	if (text[0] == '\0') {
+		return;
+	}
+
 	if (!(textSurface = TTF_RenderText_Solid(fileTextFont, text, textColor))) {
 		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	}
@@ -140,20 +146,13 @@ void drawFile(const int xPos, const int yPos) {
 	}
 }
 
-//TODO add struct for current directory bar and add it to state
-void drawCurrentDirectoryBar(const char* currentDirectory, const size_t length) {
-	const int width = SCREEN_WIDTH - FILE_LIST_LEFT_PADDING - FILE_LIST_RIGHT_PADDING;
-	drawRectOutLine(FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING, width, CURRENT_DIRECTORY_BAR_HEIGHT);
-	drawText(currentDirectory, length, FILE_LIST_LEFT_PADDING, CURRENT_DIRECTORY_TOP_PADDING + TEXT_TOP_OFFSET);
-}
-
 void updateSDL(struct STATE* state) {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
 
 	drawDirectoryItems(state->directoryContents);
-	drawCurrentDirectoryBar(state->currentDirectory, state->cdStringLength);
+	drawCurrentDirectoryBar(state->currentDirectory);
 
 	SDL_RenderPresent(renderer);
 }

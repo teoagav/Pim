@@ -25,6 +25,7 @@ int main(int argc, char** args) {
       }
 			else if (event.button.type == SDL_MOUSEBUTTONUP && event.button.clicks == 2) {
 				handleDoubleClick(currentState, event.button.x, event.button.y);
+				updateSDL(currentState);
 			}
     }
   }

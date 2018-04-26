@@ -7,9 +7,7 @@
 #include "directoryBar.h"
 
 struct STATE {
-  //struct DIRECTORY_BAR* currentDirectory
-  char* currentDirectory;
-  size_t cdStringLength;
+  struct DIRECTORY_BAR* currentDirectory;
   struct DIRECTORY* directoryContents;
 };
 

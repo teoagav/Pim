@@ -120,6 +120,11 @@ struct DIRECTORY* listDirectoryItems(const char* const directoryPath) {
 
     const size_t nameLength = strlen(entry->d_name);
 
+		printf("%s:\n", entry->d_name);
+		printf("size: %zu\n", size);
+		printf("location: %zu\n", location);
+		printf("directoryLoc: %zu\n", directoryLoc);
+
     if (nameLength == 1 && entry->d_name[0] == '.') {
       continue;
     }
@@ -198,7 +203,6 @@ void freeDirectory(struct DIRECTORY* directory) {
 }
 
 void drawDirectoryItems(const struct DIRECTORY* dir) {
-	printf("%zu\n", dir->itemCount);
 	const size_t topItem = dir->topItem;
 
 	const int fileListHeight = SCREEN_HEIGHT - FILE_LIST_TOP_PADDING - FILE_LIST_BOTTOM_PADDING;
@@ -209,8 +213,6 @@ void drawDirectoryItems(const struct DIRECTORY* dir) {
 		const int yPos = dir->items[i].button.yPos;
 		const int width = dir->items[i].button.width;
 		const int height = dir->items[i].button.height;
-
-		printf("%s\n", name);
 
 		if (dir->items[i].type == FILE_TYPE) {
 			drawFile(xPos, yPos);
